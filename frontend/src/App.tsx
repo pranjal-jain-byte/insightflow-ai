@@ -30,7 +30,7 @@ export default function App() {
   }, [appName]);
 
   const [showSettings, setShowSettings] = useState(false);
-  const [settingsSection, setSettingsSection] = useState<SettingsSection>("connections");
+  const [settingsSection, setSettingsSection] = useState<SettingsSection | undefined>(undefined);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   // null = still checking; true = show; false = don't show
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(
@@ -86,7 +86,7 @@ export default function App() {
         <div className="flex items-center justify-end px-4 py-2 border-b border-border/40" data-print-hide>
           <button
             onClick={() => {
-              setSettingsSection("connections");
+              setSettingsSection(undefined);
               setShowSettings(true);
             }}
             className="relative flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground
@@ -115,7 +115,10 @@ export default function App() {
 
       {showSettings && (
         <SettingsModal
-          onClose={() => setShowSettings(false)}
+          onClose={() => {
+            setShowSettings(false);
+            setSettingsSection(undefined);
+          }}
           updateAvailable={updateAvailable}
           initialSection={settingsSection}
         />

@@ -1335,11 +1335,13 @@ const SECTION_DESCRIPTIONS: Record<Section, string> = {
 // --- Main modal ---
 
 export function SettingsModal({ onClose, updateAvailable, initialSection }: Props) {
-  const [section, setSection] = useState<SettingsSection>(initialSection || (updateAvailable ? "about" : "connections"));
+  const [section, setSection] = useState<SettingsSection>(
+    initialSection ?? (updateAvailable ? "about" : "connections")
+  );
 
   useEffect(() => {
-    if (initialSection) setSection(initialSection);
-  }, [initialSection]);
+    setSection(initialSection ?? (updateAvailable ? "about" : "connections"));
+  }, [initialSection, updateAvailable]);
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">

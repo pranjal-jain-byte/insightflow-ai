@@ -44,17 +44,17 @@ test.describe("stream — switch-back shows full response", () => {
     await convAItem.click();
     await expect(page.getByPlaceholder("Ask about your data…")).toBeVisible();
 
-    const streamRequestPromise = page.waitForRequest(
-      (req) =>
-        req.url().includes(`/api/conversations/${convA.id}/messages`) &&
-        req.method() === "POST"
+    const streamResponsePromise = page.waitForResponse(
+      (res) =>
+        res.url().includes(`/api/conversations/${convA.id}/messages`) &&
+        res.status() === 200
     );
 
     await page.getByPlaceholder("Ask about your data…").fill("test question");
     await page.keyboard.press("Enter");
 
     // Confirm SSE connection is live before switching
-    await streamRequestPromise;
+    await streamResponsePromise;
 
     // Switch away mid-stream — aborts the client-side SSE reader,
     // but the backend task keeps running (the fix).

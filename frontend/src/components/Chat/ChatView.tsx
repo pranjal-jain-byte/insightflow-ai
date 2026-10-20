@@ -104,7 +104,8 @@ export function ChatView({ onOpenSettings }: Props) {
         const reattachTurnUsage: TurnUsage = { input_tokens: 0, output_tokens: 0, total_tokens: 0, cache_read_tokens: 0, cache_creation_tokens: 0, calls: 0 };
         while (!result.done) {
           // Bail if the user switched away while we were awaiting
-          if (activeId !== snapId) {
+          if (controller.signal.aborted || useConversationsStore.getState().activeId !== snapId) {
+            aborted = true;
             controller.abort();
             return;
           }
@@ -148,8 +149,12 @@ export function ChatView({ onOpenSettings }: Props) {
           }
           result = await stream.next();
         }
-      } catch (err) {
-        if (err instanceof DOMException && err.name === "AbortError") {
+      } catch (err: unknown) {
+        if (
+          (err instanceof DOMException && err.name === "AbortError") ||
+          (err as { name?: string })?.name === "AbortError" ||
+          controller.signal.aborted
+        ) {
           aborted = true;
           return;
         }
@@ -160,9 +165,13 @@ export function ChatView({ onOpenSettings }: Props) {
           payload: { error: String(err) },
         });
       } finally {
-        streamAbortRef.current = null;
-        setStreaming(false);
-        if (!aborted && activeId === snapId) {
+        if (streamAbortRef.current === controller) {
+          streamAbortRef.current = null;
+        }
+        if (useConversationsStore.getState().activeId === snapId) {
+          setStreaming(false);
+        }
+        if (!aborted && useConversationsStore.getState().activeId === snapId) {
           // Reload full history from DB to catch anything committed after the
           // initial fetch, then generate/update the title.
           getConversation(snapId).then((refreshed) => {
@@ -235,13 +244,18 @@ export function ChatView({ onOpenSettings }: Props) {
 
     const conversationId = activeId;
     let aborted = false;
+    const controller = new AbortController();
     try {
-      const controller = new AbortController();
       streamAbortRef.current = controller;
       const stream = streamMessage(conversationId, text, controller.signal);
       let result = await stream.next();
       const sendTurnUsage: TurnUsage = { input_tokens: 0, output_tokens: 0, total_tokens: 0, cache_read_tokens: 0, cache_creation_tokens: 0, calls: 0 };
       while (!result.done) {
+        if (controller.signal.aborted || useConversationsStore.getState().activeId !== conversationId) {
+          aborted = true;
+          controller.abort();
+          return;
+        }
         const event = result.value;
         if (event.event === "TEXT") {
           appendStreamingText((event.payload as { text: string }).text);
@@ -285,8 +299,12 @@ export function ChatView({ onOpenSettings }: Props) {
         }
         result = await stream.next();
       }
-    } catch (err) {
-      if (err instanceof DOMException && err.name === "AbortError") {
+    } catch (err: unknown) {
+      if (
+        (err instanceof DOMException && err.name === "AbortError") ||
+        (err as { name?: string })?.name === "AbortError" ||
+        controller.signal.aborted
+      ) {
         aborted = true;
         return;
       }
@@ -297,9 +315,13 @@ export function ChatView({ onOpenSettings }: Props) {
         payload: { error: String(err) },
       });
     } finally {
-      streamAbortRef.current = null;
-      finalizeStreaming();
-      setStreaming(false);
+      if (streamAbortRef.current === controller) {
+        streamAbortRef.current = null;
+      }
+      if (useConversationsStore.getState().activeId === conversationId) {
+        finalizeStreaming();
+        setStreaming(false);
+      }
       if (!aborted) {
         // Fire-and-forget title generation after the turn completes
         generateTitle(conversationId).then((r) => {

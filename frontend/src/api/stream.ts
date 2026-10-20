@@ -12,12 +12,14 @@ export async function* reattachStream(
   let buffer = "";
 
   while (true) {
+    if (signal?.aborted) break;
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split("\n\n");
     buffer = lines.pop() ?? "";
     for (const chunk of lines) {
+      if (signal?.aborted) break;
       const dataLine = chunk.split("\n").find((l) => l.startsWith("data: "));
       if (!dataLine) continue;
       try {
@@ -51,6 +53,7 @@ export async function* streamMessage(
   let buffer = "";
 
   while (true) {
+    if (signal?.aborted) break;
     const { done, value } = await reader.read();
     if (done) break;
 
@@ -59,6 +62,7 @@ export async function* streamMessage(
     buffer = lines.pop() ?? "";
 
     for (const chunk of lines) {
+      if (signal?.aborted) break;
       const dataLine = chunk
         .split("\n")
         .find((l) => l.startsWith("data: "));

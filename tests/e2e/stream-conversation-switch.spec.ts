@@ -57,10 +57,10 @@ test.describe("stream — conversation-switch isolation", () => {
     // Arm a request watcher BEFORE triggering the send so we can confirm the
     // SSE request is in-flight (real HTTP connection open, chunks arriving) before
     // we switch conversations.
-    const streamRequestPromise = page.waitForRequest(
-      (req) =>
-        req.url().includes(`/api/conversations/${convA.id}/messages`) &&
-        req.method() === "POST"
+    const streamResponsePromise = page.waitForResponse(
+      (res) =>
+        res.url().includes(`/api/conversations/${convA.id}/messages`) &&
+        res.status() === 200
     );
 
     // Send — the real backend starts streaming 80ms-spaced TEXT chunks
@@ -68,7 +68,7 @@ test.describe("stream — conversation-switch isolation", () => {
     await page.keyboard.press("Enter");
 
     // Ensure the SSE connection is established before switching
-    await streamRequestPromise;
+    await streamResponsePromise;
 
     // Switch to Conversation B — triggers AbortController.abort() in ChatView's
     // useEffect([activeId]), which aborts the live reader.read() mid-stream.

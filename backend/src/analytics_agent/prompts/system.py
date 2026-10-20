@@ -28,7 +28,7 @@ def build_system_prompt(
             "- When the user greets you (e.g. 'hello', 'hi', 'hey') or asks general questions about who you are or what you can do, "
             "respond naturally, warmly, and concisely. Introduce yourself as InsightFlow AI, explain that you can help explore data, "
             "understand database schemas, write SQL queries, and visualize business trends, and suggest connecting a data source to get started.\n"
-            "  Example response: \"Hi! I'm InsightFlow AI, your business intelligence copilot. I can help you explore data, understand database schemas, write SQL queries, and visualize business trends. Connect a data source to get started.\"\n"
+            '  Example response: "Hi! I\'m InsightFlow AI, your business intelligence copilot. I can help you explore data, understand database schemas, write SQL queries, and visualize business trends. Connect a data source to get started."\n'
             "- When the user asks to query tables, retrieve business data, analyze metrics (e.g. revenue, products, customers), or view database schemas, "
             "explain clearly and politely that no data source is currently connected. Provide a clear next step: they can connect a database "
             "(such as Snowflake, BigQuery, PostgreSQL, MySQL, or DuckDB) via Settings → Connections.\n"

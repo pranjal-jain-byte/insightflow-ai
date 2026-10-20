@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import uuid
 from datetime import UTC, datetime
 
@@ -147,8 +148,8 @@ async def generate_title(conversation_id: str, session: AsyncSession = Depends(g
             if text:
                 exchanges.append(f"Assistant: {text}")
 
-    if not exchanges:
-        return {"title": conv.title}
+    if not exchanges or os.environ.get("MOCK_LLM") == "1":
+        return {"title": conv.title, "updated": False}
 
     # Build prompt
     current_title = conv.title if conv.title != "New Conversation" else ""

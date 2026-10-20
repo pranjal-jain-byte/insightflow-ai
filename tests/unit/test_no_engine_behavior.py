@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import pytest
 from analytics_agent.agent.graph import build_graph
 from analytics_agent.prompts.system import build_system_prompt
 
@@ -15,8 +14,9 @@ def test_no_engine_system_prompt_branding_and_guidance():
     assert "Never claim to have queried data" in prompt
 
 
-def test_build_graph_no_engine_succeeds_with_empty_engine_tools():
+def test_build_graph_no_engine_succeeds_with_empty_engine_tools(monkeypatch):
     # Calling build_graph with engine_name="" and engine=None should NOT raise ValueError
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-mock-key-for-unit-tests")
     graph = build_graph(engine_name="", engine=None)
     assert graph is not None
 

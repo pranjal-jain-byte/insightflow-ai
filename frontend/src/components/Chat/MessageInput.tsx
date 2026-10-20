@@ -89,7 +89,7 @@ export function MessageInput({ onSend, onStop, disabled, isStreaming }: Props) {
             placeholder={
               isStreaming
                 ? "InsightFlow AI is generating insights…"
-                : "Ask questions about your business data, schemas, or analytics (Enter to send)…"
+                : "Ask about your data…"
             }
             disabled={disabled}
             rows={1}

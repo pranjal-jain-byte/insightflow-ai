@@ -166,9 +166,9 @@ async def _run_and_broadcast(
             from analytics_agent.config import settings as _settings
             from analytics_agent.context.registry import build_platform
             from analytics_agent.db.repository import ContextPlatformRepo, SettingsRepo
+            from analytics_agent.engines.factory import get_registry
             from analytics_agent.engines.mcp.engine import MCPQueryEngine
             from analytics_agent.engines.resolver import resolve_engine
-            from analytics_agent.engines.factory import get_registry
 
             prior_messages = await msg_repo.list_for_conversation(conversation_id)
             history = build_history(

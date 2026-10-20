@@ -7,6 +7,10 @@ import { join } from "path";
 const testDbPath = join(mkdtempSync(join(tmpdir(), "analytics-agent-e2e-")), "test.db");
 const TEST_PORT = 18000;
 
+const serverCommand = process.platform === "win32"
+  ? `.\\.venv\\Scripts\\python.exe -m analytics_agent.cli bootstrap && .\\.venv\\Scripts\\python.exe -m uvicorn analytics_agent.main:app --port ${TEST_PORT}`
+  : `uv run analytics-agent bootstrap && uv run uvicorn analytics_agent.main:app --port ${TEST_PORT}`;
+
 export default defineConfig({
   testDir: "./",
   testMatch: "**/*.spec.ts",
@@ -25,7 +29,7 @@ export default defineConfig({
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 
   webServer: {
-    command: `uv run analytics-agent bootstrap && uv run uvicorn analytics_agent.main:app --port ${TEST_PORT}`,
+    command: serverCommand,
     url: `http://localhost:${TEST_PORT}/api/engines`,
     cwd: join(__dirname, "../.."),  // repo root so Alembic finds its config
     reuseExistingServer: false,

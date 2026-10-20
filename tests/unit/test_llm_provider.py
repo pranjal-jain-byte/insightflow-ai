@@ -72,6 +72,7 @@ def _settings(provider: str, **overrides) -> Settings:
     return Settings(
         llm_provider=provider,
         database_url="sqlite+aiosqlite:///./test.db",
+        _env_file=None,
         **overrides,
     )
 
@@ -305,7 +306,11 @@ _ALIAS_PAIRS = [
 
 
 def _make_settings(monkeypatch) -> Settings:
-    return Settings(llm_provider="openai-compatible", database_url="sqlite+aiosqlite:///./test.db")
+    return Settings(
+        llm_provider="openai-compatible",
+        database_url="sqlite+aiosqlite:///./test.db",
+        _env_file=None,
+    )
 
 
 @pytest.mark.parametrize("old_name,new_name,field,value", _ALIAS_PAIRS)
