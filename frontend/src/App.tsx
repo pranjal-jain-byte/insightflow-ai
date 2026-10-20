@@ -7,7 +7,7 @@ import { useConversationsStore } from "@/store/conversations";
 import { useDisplayStore } from "@/store/display";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { ChatView } from "@/components/Chat/ChatView";
-import { SettingsModal } from "@/components/Settings/SettingsModal";
+import { SettingsModal, type SettingsSection } from "@/components/Settings/SettingsModal";
 import { OnboardingWizard } from "@/components/Onboarding/OnboardingWizard";
 
 // Captured before any effects run — the hash effect clears it immediately,
@@ -30,6 +30,7 @@ export default function App() {
   }, [appName]);
 
   const [showSettings, setShowSettings] = useState(false);
+  const [settingsSection, setSettingsSection] = useState<SettingsSection>("connections");
   const [updateAvailable, setUpdateAvailable] = useState(false);
   // null = still checking; true = show; false = don't show
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(
@@ -84,7 +85,10 @@ export default function App() {
       <main className="flex-1 flex flex-col overflow-hidden">
         <div className="flex items-center justify-end px-4 py-2 border-b border-border/40" data-print-hide>
           <button
-            onClick={() => setShowSettings(true)}
+            onClick={() => {
+              setSettingsSection("connections");
+              setShowSettings(true);
+            }}
             className="relative flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground
                        px-2.5 py-1.5 rounded-md hover:bg-muted/60 transition-colors"
             title={updateAvailable ? "Settings — update available" : "Settings"}
@@ -101,13 +105,19 @@ export default function App() {
             Settings
           </button>
         </div>
-        <ChatView />
+        <ChatView
+          onOpenSettings={(section = "connections") => {
+            setSettingsSection(section);
+            setShowSettings(true);
+          }}
+        />
       </main>
 
       {showSettings && (
         <SettingsModal
           onClose={() => setShowSettings(false)}
           updateAvailable={updateAvailable}
+          initialSection={settingsSection}
         />
       )}
 

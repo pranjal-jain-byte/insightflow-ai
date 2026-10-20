@@ -71,12 +71,17 @@ def build_graph(
     if engine_tools is not None:
         engine_tools = [t for t in engine_tools if t.name not in disabled]
     else:
-        if engine is None:
+        if engine is not None:
+            engine_tools = [t for t in engine.get_tools() if t.name not in disabled]
+        elif engine_name:
             registry = get_registry()
             engine = registry.get(engine_name)
             if not engine:
-                raise ValueError(f"Engine '{engine_name}' not found.")
-        engine_tools = [t for t in engine.get_tools() if t.name not in disabled]
+                engine_tools = []
+            else:
+                engine_tools = [t for t in engine.get_tools() if t.name not in disabled]
+        else:
+            engine_tools = []
     chart_tools = [] if "create_chart" in disabled else [create_chart]
     all_tools = datahub_tools + skill_tools + engine_tools + chart_tools
 

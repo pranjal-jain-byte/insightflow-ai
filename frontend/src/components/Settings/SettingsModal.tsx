@@ -76,12 +76,15 @@ import type { NewConnectionPayload, ConnectionPlugin } from "./connections/types
 import { ModelSection } from "./ModelSection";
 import { AboutSection } from "./AboutSection";
 
-type Section = "connections" | "model" | "prompt" | "display" | "about";
+export type SettingsSection = "connections" | "model" | "prompt" | "display" | "about";
+type Section = SettingsSection;
 
 interface Props {
   onClose: () => void;
   /** When true the About nav item shows an update-available badge. */
   updateAvailable?: boolean;
+  /** Pre-select a settings section when opened */
+  initialSection?: SettingsSection;
 }
 
 // --- Status badge ---
@@ -1331,8 +1334,12 @@ const SECTION_DESCRIPTIONS: Record<Section, string> = {
 
 // --- Main modal ---
 
-export function SettingsModal({ onClose, updateAvailable }: Props) {
-  const [section, setSection] = useState<Section>(updateAvailable ? "about" : "connections");
+export function SettingsModal({ onClose, updateAvailable, initialSection }: Props) {
+  const [section, setSection] = useState<SettingsSection>(initialSection || (updateAvailable ? "about" : "connections"));
+
+  useEffect(() => {
+    if (initialSection) setSection(initialSection);
+  }, [initialSection]);
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">

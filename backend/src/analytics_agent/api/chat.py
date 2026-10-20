@@ -158,50 +158,6 @@ async def _run_and_broadcast(
                     _broadcast(evt)
                 return
 
-            # ── No engine ─────────────────────────────────────────────────────
-            from analytics_agent.engines.factory import list_engines as _list_engines
-
-            if not engine_name or engine_name not in {e["name"] for e in _list_engines()}:
-                _msg = (
-                    "I'm ready to help, but I don't have a data source connected yet. "
-                    "To query your data, add a SQL engine to `config.yaml` "
-                    "(see `config.yaml.example` — Snowflake, BigQuery, MySQL, DuckDB and more "
-                    "are supported) and restart the server. "
-                    "Once a source is connected I can write queries, explore schemas, and "
-                    "build visualizations for you."
-                )
-                _run_id = str(uuid.uuid4())
-                for _evt in cast(
-                    list[dict[str, Any]],
-                    [
-                        {
-                            "event": "TEXT",
-                            "conversation_id": conversation_id,
-                            "message_id": _run_id,
-                            "payload": {"text": _msg},
-                        },
-                        {
-                            "event": "COMPLETE",
-                            "conversation_id": conversation_id,
-                            "message_id": str(uuid.uuid4()),
-                            "payload": {"text": _msg},
-                        },
-                    ],
-                ):
-                    with contextlib.suppress(Exception):
-                        await _persist_message(
-                            session,
-                            conversation_id,
-                            _evt["event"],
-                            "assistant",
-                            _evt["payload"],
-                            sequence,
-                        )
-                        await session.commit()
-                        sequence += 1
-                    _broadcast(_evt)
-                return
-
             # ── Normal agent path ─────────────────────────────────────────────
             from analytics_agent.agent.compactor_registry import get_compactor
             from analytics_agent.agent.graph import build_graph
@@ -212,6 +168,7 @@ async def _run_and_broadcast(
             from analytics_agent.db.repository import ContextPlatformRepo, SettingsRepo
             from analytics_agent.engines.mcp.engine import MCPQueryEngine
             from analytics_agent.engines.resolver import resolve_engine
+            from analytics_agent.engines.factory import get_registry
 
             prior_messages = await msg_repo.list_for_conversation(conversation_id)
             history = build_history(
@@ -263,15 +220,26 @@ async def _run_and_broadcast(
                     len(context_tools),
                     conversation_id,
                 )
-                engine = await resolve_engine(engine_name, session)
+                registry = get_registry()
+                engine = None
                 engine_tools = None
-                if isinstance(engine, MCPQueryEngine):
-                    mcp_tools = await engine.get_tools_async()
-                    engine_tools = [t for t in mcp_tools if t.name not in disabled_tools]
+
+                if engine_name and engine_name in registry:
+                    try:
+                        engine = await resolve_engine(engine_name, session)
+                        if isinstance(engine, MCPQueryEngine):
+                            mcp_tools = await engine.get_tools_async()
+                            engine_tools = [t for t in mcp_tools if t.name not in disabled_tools]
+                    except Exception as exc:
+                        logger.warning("Failed to resolve engine %s: %s", engine_name, exc)
+                        engine = None
+                else:
+                    engine = None
+                    engine_tools = []
 
                 graph = build_graph(
                     engine=engine if not isinstance(engine, MCPQueryEngine) else None,
-                    engine_name=engine_name,
+                    engine_name=engine_name if engine else "",
                     system_prompt_override=custom_prompt,
                     disabled_tools=disabled_tools,
                     enabled_mutations=enabled_mutations,

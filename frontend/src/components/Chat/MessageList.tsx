@@ -31,10 +31,10 @@ function TurnContent({
   onChartError?: (error: string) => void;
 }) {
   return (
-    <>
+    <div className="w-full space-y-3.5">
       {/* User message */}
       {group.userMsg && (
-        <div className="flex flex-col items-end" data-print-role="user">
+        <div className="flex flex-col items-end w-full" data-print-role="user">
           <TextMessage payload={group.userMsg.payload as never} role="user" isStreaming={false} />
         </div>
       )}
@@ -59,7 +59,7 @@ function TurnContent({
 
       {/* Final visible response */}
       {group.finalMsg && (group.finalMsg.payload as { text?: string }).text?.trim() && (
-        <div className="flex flex-col items-start" data-print-role="assistant">
+        <div className="flex flex-col items-start w-full" data-print-role="assistant">
           <TextMessage
             payload={group.finalMsg.payload as never}
             role="assistant"
@@ -67,7 +67,7 @@ function TurnContent({
           />
         </div>
       )}
-    </>
+    </div>
   );
 }
 
@@ -104,8 +104,8 @@ export function MessageList({
 
   if (messages.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-        Ask a question about your data
+      <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm font-medium">
+        Ask a question about your business data
       </div>
     );
   }
@@ -114,17 +114,14 @@ export function MessageList({
   // CSS (direct-child `data-print-role` selectors) works unchanged.
   if (printing) {
     return (
-      // Fragment (not a wrapping div) keeps each turn's `data-print-role`
-      // elements as *direct* children of #chat-messages, so the @media print
-      // rules `#chat-messages > [data-print-role]` still match. The container's
-      // own `space-y-3` supplies the inter-element gap, as in the pre-virtualized
-      // version.
-      <div id="chat-messages" className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {groups.map((group) => (
-          <Fragment key={group.key}>
-            <TurnContent group={group} showReasoning={showReasoning} onChartError={onChartError} />
-          </Fragment>
-        ))}
+      <div id="chat-messages" className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-6">
+        <div className="max-w-4xl mx-auto w-full space-y-4">
+          {groups.map((group) => (
+            <Fragment key={group.key}>
+              <TurnContent group={group} showReasoning={showReasoning} onChartError={onChartError} />
+            </Fragment>
+          ))}
+        </div>
       </div>
     );
   }
@@ -141,9 +138,9 @@ export function MessageList({
       id="chat-messages"
       ref={parentRef}
       onScroll={handleScroll}
-      className="flex-1 overflow-y-auto px-4 py-4"
+      className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-6"
     >
-      <div style={{ height: virtualizer.getTotalSize(), position: "relative", width: "100%" }}>
+      <div className="max-w-4xl mx-auto w-full" style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
         {virtualizer.getVirtualItems().map((item) => (
           <div
             key={item.key}
@@ -157,9 +154,7 @@ export function MessageList({
               transform: `translateY(${item.start}px)`,
             }}
           >
-            {/* pb-3 reproduces the old `space-y-3` gap; it lives inside the
-                measured element so each row's height includes the gap. */}
-            <div className="pb-3 space-y-3">
+            <div className="pb-4">
               <TurnContent
                 group={groups[item.index]}
                 showReasoning={showReasoning}

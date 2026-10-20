@@ -14,7 +14,11 @@ import type { UIMessage } from "@/types";
 import { buildUiMessages } from "@/lib/buildUiMessages";
 import { v4 as uuidv4 } from "uuid";
 
-export function ChatView() {
+interface Props {
+  onOpenSettings?: (section?: "connections" | "model" | "prompt" | "display" | "about") => void;
+}
+
+export function ChatView({ onOpenSettings }: Props) {
   const {
     activeId,
     messages,
@@ -313,7 +317,7 @@ export function ChatView() {
   };
 
   if (!activeId) {
-    return <WelcomeView onSend={handleWelcomeSend} />;
+    return <WelcomeView onSend={handleWelcomeSend} onOpenSettings={onOpenSettings} />;
   }
 
   return (
@@ -329,41 +333,56 @@ export function ChatView() {
       </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border" data-print-hide>
-        <span className="text-sm font-medium truncate">
-          {activeConv?.title ?? "Conversation"}
-        </span>
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 border-b border-border/80 bg-background/50 backdrop-blur-xs" data-print-hide>
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm font-semibold truncate text-foreground">
+            {activeConv?.title ?? "Conversation"}
+          </span>
+        </div>
+        <div className="flex items-center gap-2.5">
           {messages.length > 0 && (
             <button
               onClick={() => setExportModalOpen(true)}
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground
-                         px-2 py-1 rounded hover:bg-muted/60 transition-colors"
+                         px-2.5 py-1 rounded-lg hover:bg-muted/60 transition-colors cursor-pointer"
               title="Export as PDF"
             >
               <Download className="w-3.5 h-3.5" />
-              Export PDF
+              <span>Export PDF</span>
             </button>
           )}
-          <EngineSelector
-            engines={engines}
-            selected={activeConv?.engine_name ?? ""}
-            onChange={async (name) => {
-              if (!activeId || name === activeConv?.engine_name) return;
-              await fetch(`/api/conversations/${activeId}/engine`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ engine_name: name }),
-              });
-              // Update local store
-              useConversationsStore.setState((s) => ({
-                conversations: s.conversations.map((c) =>
-                  c.id === activeId ? { ...c, engine_name: name } : c
-                ),
-              }));
-            }}
-            disabled={isStreaming}
-          />
+
+          {engines.length === 0 ? (
+            <button
+              type="button"
+              onClick={() => onOpenSettings?.("connections")}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 transition-all cursor-pointer"
+              title="No data source connected — click to connect in Settings"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              <span>No data source</span>
+            </button>
+          ) : (
+            <EngineSelector
+              engines={engines}
+              selected={activeConv?.engine_name ?? ""}
+              onChange={async (name) => {
+                if (!activeId || name === activeConv?.engine_name) return;
+                await fetch(`/api/conversations/${activeId}/engine`, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ engine_name: name }),
+                });
+                // Update local store
+                useConversationsStore.setState((s) => ({
+                  conversations: s.conversations.map((c) =>
+                    c.id === activeId ? { ...c, engine_name: name } : c
+                  ),
+                }));
+              }}
+              disabled={isStreaming}
+            />
+          )}
         </div>
       </div>
 
