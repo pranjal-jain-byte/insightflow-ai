@@ -6,9 +6,12 @@ interface Props {
 
 export function ErrorMessage({ payload }: Props) {
   return (
-    <div className="max-w-[90%] flex items-start gap-2 px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-red-700 text-xs">
-      <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-      <span className="font-mono leading-relaxed">{payload.error}</span>
+    <div className="max-w-[90%] flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl border border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400 text-xs shadow-xs">
+      <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-red-600 dark:text-red-400" />
+      <div className="space-y-0.5">
+        <p className="font-semibold text-red-800 dark:text-red-300">Execution Error</p>
+        <p className="font-mono leading-relaxed whitespace-pre-wrap">{payload.error}</p>
+      </div>
     </div>
   );
 }

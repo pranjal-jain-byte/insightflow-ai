@@ -14,6 +14,12 @@ import click
 
 from analytics_agent import bootstrap
 
+if sys.platform == "win32":
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 
 @click.group()
 @click.version_option(package_name="datahub-analytics-agent")

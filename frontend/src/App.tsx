@@ -26,7 +26,7 @@ export default function App() {
   // Keep browser tab title in sync with the configured agent name
   const { appName } = useDisplayStore();
   useEffect(() => {
-    document.title = appName || "Analytics Agent";
+    document.title = appName ? `${appName} · InsightFlow AI` : "InsightFlow AI — Business Intelligence Copilot";
   }, [appName]);
 
   const [showSettings, setShowSettings] = useState(false);

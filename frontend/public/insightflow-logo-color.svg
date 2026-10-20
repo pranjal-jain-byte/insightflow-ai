@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60" fill="none">
+  <defs>
+    <linearGradient id="if-grad-light" x1="8" y1="52" x2="52" y2="8" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#172554"/>
+      <stop offset="55%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <linearGradient id="if-diamond-light" x1="18" y1="18" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Logo Mark -->
+  <g transform="translate(4, 2)">
+    <rect width="52" height="52" rx="14" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5"/>
+    <!-- Flow arcs -->
+    <path d="M 14 38 C 14 22 22 14 38 14" stroke="url(#if-grad-light)" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M 16 40 C 30 40 40 30 40 16" stroke="#4F46E5" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.4"/>
+    <circle cx="14" cy="38" r="3.5" fill="#172554"/>
+    <circle cx="38" cy="14" r="4" fill="#0284C7"/>
+    <!-- Diamond spark -->
+    <path d="M 26 19 L 32 25 L 26 31 L 20 25 Z" fill="url(#if-diamond-light)"/>
+    <circle cx="26" cy="25" r="1.5" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="68" y="32" font-family="'Inter', -apple-system, sans-serif" font-size="20" font-weight="700" fill="#0F172A" letter-spacing="-0.03em">Insight<tspan fill="#4F46E5">Flow</tspan></text>
+  <rect x="180" y="18" width="28" height="18" rx="4" fill="#172554"/>
+  <text x="186" y="31" font-family="'Inter', -apple-system, sans-serif" font-size="10" font-weight="700" fill="#FFFFFF" letter-spacing="0.05em">AI</text>
+  <text x="68" y="47" font-family="'Inter', -apple-system, sans-serif" font-size="10" font-weight="500" fill="#64748B" letter-spacing="0.01em">Business Intelligence Copilot</text>
+</svg>

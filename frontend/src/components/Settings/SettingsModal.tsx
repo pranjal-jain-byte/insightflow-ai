@@ -66,6 +66,7 @@ import {
 import { SnowflakeAuthSection } from "./SnowflakeAuthSection";
 import { DataHubBadge } from "@/components/Brand/DataHubBadge";
 import { ThemeSwitcher } from "@/components/Brand/ThemeSwitcher";
+import { InsightFlowIcon } from "@/components/Brand/InsightFlowIcon";
 import { useDisplayStore } from "@/store/display";
 import { useConversationsStore } from "@/store/conversations";
 import { useConnectionSettingsStore } from "@/store/connectionSettings";
@@ -1212,7 +1213,7 @@ function DisplaySection() {
             type="text"
             value={appName}
             onChange={(e) => setAppName(e.target.value)}
-            placeholder="Analytics Agent"
+            placeholder="InsightFlow AI"
             className="w-full text-sm bg-background border border-border rounded px-3 py-2
                        focus:outline-none focus:ring-1 focus:ring-primary/50"
           />
@@ -1246,18 +1247,10 @@ function DisplaySection() {
                   onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
                 />
               ) : (
-                <svg width="22" height="22" viewBox="0 0 64 64" fill="none" aria-hidden>
-                  <path d="M8 42 A30 30 0 0 1 52 10" stroke="#0078D4" strokeWidth="7" strokeLinecap="round"/>
-                  <path d="M56 42 A30 30 0 0 0 12 10" stroke="#E8A030" strokeWidth="7" strokeLinecap="round"/>
-                  <circle cx="24" cy="28" r="3.5" fill="#D44B20"/>
-                  <circle cx="32" cy="28" r="3.5" fill="#D44B20"/>
-                  <circle cx="40" cy="28" r="3.5" fill="#D44B20"/>
-                  <path d="M8 42 L3 54 L17 45" stroke="#0078D4" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M56 42 L61 54 L47 45" stroke="#E8A030" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                <InsightFlowIcon size={24} />
               )}
               <span className="text-base font-semibold tracking-tight" style={{ letterSpacing: "-0.02em" }}>
-                {appName || "Analytics Agent"}
+                {appName || "InsightFlow AI"}
               </span>
             </div>
           </div>

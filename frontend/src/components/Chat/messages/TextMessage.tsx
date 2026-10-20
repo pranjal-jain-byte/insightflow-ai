@@ -39,7 +39,7 @@ function CopyButton({ text }: { text: string }) {
 export function TextMessage({ payload, role, isStreaming }: Props) {
   if (role === "user") {
     return (
-      <div className="relative group rounded-lg px-4 py-3 text-sm bg-primary text-primary-foreground ml-auto max-w-[75%] whitespace-pre-wrap leading-relaxed" data-print-user>
+      <div className="relative group rounded-2xl rounded-tr-sm px-4.5 py-3 text-sm bg-primary text-primary-foreground ml-auto max-w-[80%] whitespace-pre-wrap leading-relaxed shadow-xs font-normal" data-print-user>
         {payload.text}
         {isStreaming && <span className="inline-block w-1.5 h-4 bg-current ml-0.5 animate-pulse" />}
         <CopyButton text={payload.text} />
@@ -50,7 +50,7 @@ export function TextMessage({ payload, role, isStreaming }: Props) {
   const cleanText = role === "assistant" ? stripChartJson(payload.text) : payload.text;
 
   return (
-    <div className="relative group rounded-lg px-4 py-3 text-sm bg-muted text-foreground max-w-[90%] leading-relaxed prose prose-sm prose-neutral max-w-none">
+    <div className="relative group rounded-2xl rounded-tl-sm px-4.5 py-3.5 text-sm bg-surface border border-border text-foreground max-w-[92%] leading-relaxed prose prose-sm prose-neutral max-w-none shadow-xs">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{

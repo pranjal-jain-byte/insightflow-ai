@@ -41,19 +41,19 @@ export function Sidebar() {
     : conversations;
 
   return (
-    <aside className="w-64 flex flex-col border-r border-border h-full bg-muted/40">
+    <aside className="w-64 flex flex-col border-r border-border h-full bg-surface">
       {/* Brand header */}
-      <div className="flex items-center justify-between px-3 py-3 border-b border-border">
+      <div className="flex items-center justify-between px-3.5 py-3.5 border-b border-border">
         <button
           onClick={() => setActiveId(null)}
-          className="hover:opacity-70 transition-opacity"
-          title="Home"
+          className="hover:opacity-85 transition-opacity text-left"
+          title="InsightFlow AI Home"
         >
           <AppLogo />
         </button>
         <button
           onClick={handleNew}
-          className="p-1.5 rounded-md hover:bg-muted transition-colors"
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-accent hover:bg-accent/10 border border-transparent hover:border-accent/20 transition-all"
           title="New conversation"
         >
           <Plus className="w-4 h-4" />
@@ -61,27 +61,28 @@ export function Sidebar() {
       </div>
 
       {/* Filter */}
-      <div className="px-3 py-2 border-b border-border">
+      <div className="px-3 py-2.5 border-b border-border/60">
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/60 pointer-events-none" />
           <input
             type="text"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             placeholder="Filter conversations…"
-            className="w-full pl-7 pr-2 py-1.5 text-xs bg-background border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-muted-foreground/40"
+            className="w-full pl-8 pr-2.5 py-1.5 text-xs bg-muted/40 border border-border/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent placeholder:text-muted-foreground/50 transition-all"
           />
         </div>
       </div>
 
       {/* Conversations */}
-      <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
+      <div className="flex-1 overflow-y-auto p-2 space-y-1">
         {conversations.length === 0 ? (
-          <p className="text-xs text-muted-foreground px-2 py-4 text-center">
-            No conversations yet
-          </p>
+          <div className="text-center py-8 px-3 space-y-1">
+            <p className="text-xs font-medium text-foreground">No conversations yet</p>
+            <p className="text-[11px] text-muted-foreground">Start by asking a question about your business data.</p>
+          </div>
         ) : visibleConversations.length === 0 ? (
-          <p className="text-xs text-muted-foreground px-2 py-4 text-center">
+          <p className="text-xs text-muted-foreground px-2 py-6 text-center">
             No matching conversations
           </p>
         ) : (
@@ -97,8 +98,8 @@ export function Sidebar() {
         )}
       </div>
 
-      {/* Footer: theme switcher + DataHub badge */}
-      <div className="px-3 py-3 border-t border-border flex items-center justify-between">
+      {/* Footer: theme switcher + attribution badge */}
+      <div className="px-3 py-3 border-t border-border flex items-center justify-between bg-muted/20">
         <DataHubBadge />
         <ThemeSwitcher />
       </div>

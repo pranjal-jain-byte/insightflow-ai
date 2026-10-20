@@ -68,7 +68,7 @@ export function ThinkingMessage({ payload, isStreaming = false, usage }: Props) 
           inset: -1px;
           border-radius: 8px;
           padding: 1px;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa, #6366f1);
+          background: linear-gradient(135deg, #172554, #4F46E5, #38BDF8, #4F46E5);
           background-size: 300% 300%;
           animation: thinking-flow 2.5s ease infinite;
           -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -81,8 +81,8 @@ export function ThinkingMessage({ payload, isStreaming = false, usage }: Props) 
       <div
         className={`relative rounded-lg border transition-all duration-300 ${
           isStreaming
-            ? "thinking-border-active border-transparent bg-muted/30"
-            : "border-border bg-muted/20"
+            ? "thinking-border-active border-transparent bg-accent/5"
+            : "border-border bg-surface"
         }`}
       >
         {/* Header pill */}
@@ -97,7 +97,7 @@ export function ThinkingMessage({ payload, isStreaming = false, usage }: Props) 
           {/* Icon */}
           <span
             className={`flex-shrink-0 transition-colors duration-300 ${
-              isStreaming ? "text-violet-400" : "text-muted-foreground"
+              isStreaming ? "text-accent" : "text-muted-foreground"
             }`}
           >
             <Sparkles className={`w-3.5 h-3.5 ${isStreaming ? "animate-pulse" : ""}`} />
@@ -106,7 +106,7 @@ export function ThinkingMessage({ payload, isStreaming = false, usage }: Props) 
           {/* Label */}
           <span
             className={`text-xs font-medium flex-1 transition-colors duration-300 ${
-              isStreaming ? "text-violet-400" : "text-muted-foreground"
+              isStreaming ? "text-accent font-semibold" : "text-muted-foreground"
             }`}
           >
             {isStreaming ? (
@@ -116,7 +116,7 @@ export function ThinkingMessage({ payload, isStreaming = false, usage }: Props) 
                   {[0, 1, 2].map((i) => (
                     <span
                       key={i}
-                      className="w-1 h-1 rounded-full bg-violet-400 animate-bounce"
+                      className="w-1 h-1 rounded-full bg-accent animate-bounce"
                       style={{ animationDelay: `${i * 0.15}s` }}
                     />
                   ))}

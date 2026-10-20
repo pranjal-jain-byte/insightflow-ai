@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { ExternalLink, RefreshCw, Tag, ArrowUpCircle, ChevronDown } from "lucide-react";
+import { ExternalLink, RefreshCw, Tag, ArrowUpCircle, ChevronDown, GitFork } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getVersionInfo, getReleases, type VersionInfo, type Release } from "@/api/settings";
+import { InsightFlowIcon } from "@/components/Brand/InsightFlowIcon";
 
 const GITHUB_RELEASES_URL =
   "https://github.com/datahub-project/analytics-agent/releases";
@@ -49,6 +50,43 @@ export function AboutSection() {
 
   return (
     <div className="space-y-6">
+      {/* Product identity card */}
+      <div className="border border-border rounded-xl p-5 bg-surface shadow-xs space-y-3.5">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-accent/10 border border-accent/20">
+            <InsightFlowIcon size={28} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-bold text-foreground">InsightFlow AI</h2>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-accent/10 text-accent uppercase tracking-wider">
+                Enterprise BI Copilot
+              </span>
+            </div>
+            <p className="text-xs font-medium text-accent">
+              Turn business questions into actionable insights.
+            </p>
+          </div>
+        </div>
+
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          InsightFlow AI is an AI-powered business intelligence copilot that translates natural-language questions into SQL queries, analyzes business data, generates visualizations, and delivers context-aware answers.
+        </p>
+
+        <div className="pt-2 border-t border-border/50 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
+          <span>Target Users: Business &amp; Data Analysts, Operations Teams, Decision-Makers</span>
+          <a
+            href="https://github.com/datahub-project/analytics-agent"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-accent hover:underline font-medium"
+          >
+            <GitFork className="w-3 h-3" />
+            Upstream: DataHub Analytics Agent
+          </a>
+        </div>
+      </div>
+
       {/* Version card */}
       <div className="border border-border rounded-lg p-4 space-y-3">
         <div className="flex items-center justify-between">

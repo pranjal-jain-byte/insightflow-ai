@@ -382,14 +382,21 @@ def create_app() -> FastAPI:
     from analytics_agent._version import get_package_version
 
     app = FastAPI(
-        title="DataHub Talk to Data",
+        title="InsightFlow AI",
         version=get_package_version(),
         lifespan=lifespan,
     )
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:5173", "http://localhost:3000"],
+        allow_origins=[
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:8100",
+            "http://127.0.0.1:8100",
+        ],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -425,7 +432,10 @@ def create_app() -> FastAPI:
 
         @app.get("/{full_path:path}", include_in_schema=False)
         async def _spa_fallback(full_path: str) -> FileResponse:
-            """Return index.html for all non-API routes (SPA client-side routing)."""
+            """Return static file if present in dist, otherwise index.html (SPA client-side routing)."""
+            target = _dist / full_path
+            if full_path and target.is_file():
+                return FileResponse(target)
             return FileResponse(_dist / "index.html", media_type="text/html")
     else:
         logger.info("Frontend dist not found at %s — running in API-only mode", _dist)

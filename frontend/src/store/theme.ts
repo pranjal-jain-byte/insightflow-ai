@@ -10,21 +10,27 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      theme: "datahub",
+      theme: "insightflow",
       setTheme: (theme) => {
-        document.documentElement.setAttribute("data-theme", theme);
+        const resolvedTheme = theme === "datahub" ? "insightflow" : theme;
+        document.documentElement.setAttribute("data-theme", resolvedTheme);
         document.documentElement.classList.toggle(
           "theme-dark",
-          theme === "carbon" || theme === "ocean"
+          resolvedTheme === "carbon" || resolvedTheme === "ocean"
         );
-        set({ theme });
+        set({ theme: resolvedTheme });
       },
     }),
     {
-      name: "analytics-agent-theme",
+      name: "insightflow-theme",
       onRehydrateStorage: () => (state) => {
         if (state?.theme) {
-          document.documentElement.setAttribute("data-theme", state.theme);
+          const resolvedTheme = state.theme === "datahub" ? "insightflow" : state.theme;
+          document.documentElement.setAttribute("data-theme", resolvedTheme);
+          document.documentElement.classList.toggle(
+            "theme-dark",
+            resolvedTheme === "carbon" || resolvedTheme === "ocean"
+          );
         }
       },
     }

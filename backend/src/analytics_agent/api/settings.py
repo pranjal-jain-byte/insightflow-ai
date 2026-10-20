@@ -176,7 +176,7 @@ class UpdatePromptRequest(BaseModel):
 
 
 class DisplaySettings(BaseModel):
-    app_name: str = "Analytics Agent"
+    app_name: str = "InsightFlow AI"
     logo_url: str = ""
 
 
@@ -2304,7 +2304,7 @@ async def get_display(session: AsyncSession = Depends(get_session)) -> DisplaySe
         try:
             data = orjson.loads(raw)
             return DisplaySettings(
-                app_name=data.get("app_name", "Analytics Agent"), logo_url=data.get("logo_url", "")
+                app_name=data.get("app_name", "InsightFlow AI"), logo_url=data.get("logo_url", "")
             )
         except Exception:
             pass

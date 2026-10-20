@@ -16,6 +16,12 @@ import click
 
 from analytics_agent.config import get_config_dir
 
+if sys.platform == "win32":
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 # ── Engine prompts ─────────────────────────────────────────────────────────────
 
 # Each entry: list of (prompt_label, env_var_name, is_secret)
@@ -148,6 +154,19 @@ def _log_file() -> Path:
 
 
 def _is_running(pid: int) -> bool:
+    if sys.platform == "win32":
+        import ctypes
+
+        PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+        handle = ctypes.windll.kernel32.OpenProcess(
+            PROCESS_QUERY_LIMITED_INFORMATION, False, pid
+        )
+        if not handle:
+            return False
+        exit_code = ctypes.c_ulong()
+        ctypes.windll.kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code))
+        ctypes.windll.kernel32.CloseHandle(handle)
+        return exit_code.value == 259
     try:
         os.kill(pid, 0)
         return True
@@ -206,8 +225,17 @@ def start_server(port: int = 8100) -> int:
 
     env = os.environ.copy()
     env["ANALYTICS_AGENT_CONFIG_DIR"] = str(config_dir)
+    env["PYTHONIOENCODING"] = "utf-8"
 
-    with open(log_path, "a") as log_fh:
+    extra_kwargs: dict[str, Any] = {}
+    if sys.platform == "win32":
+        extra_kwargs["creationflags"] = (
+            subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
+        )
+    else:
+        extra_kwargs["start_new_session"] = True
+
+    with open(log_path, "a", encoding="utf-8") as log_fh:
         proc = subprocess.Popen(
             [
                 sys.executable,
@@ -222,7 +250,7 @@ def start_server(port: int = 8100) -> int:
             stdout=log_fh,
             stderr=log_fh,
             env=env,
-            start_new_session=True,
+            **extra_kwargs,
         )
 
     _pid_file().write_text(f"{proc.pid}:{port}")
@@ -236,7 +264,7 @@ def stop_server() -> bool:
         return False
     try:
         os.kill(pid, signal.SIGTERM)
-    except ProcessLookupError:
+    except (ProcessLookupError, PermissionError, OSError):
         pass
     _pid_file().unlink(missing_ok=True)
     return True
@@ -266,7 +294,7 @@ def run_wizard(port: int = 8100, reconfigure: bool = False) -> None:
     click.echo(
         textwrap.dedent("""
         ╔══════════════════════════════════════════╗
-        ║   DataHub Analytics Agent — Quickstart   ║
+        ║       InsightFlow AI — Quickstart        ║
         ╚══════════════════════════════════════════╝
         """).strip()
     )
@@ -340,6 +368,7 @@ def _bootstrap_and_launch(config_dir: Path, port: int, *, open_setup: bool = Fal
 
     env = os.environ.copy()
     env["ANALYTICS_AGENT_CONFIG_DIR"] = str(config_dir)
+    env["PYTHONIOENCODING"] = "utf-8"
 
     # Load config-dir .env into the bootstrap subprocess environment
     env_path = config_dir / ".env"

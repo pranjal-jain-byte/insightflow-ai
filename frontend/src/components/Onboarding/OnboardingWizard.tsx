@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Check, Eye, EyeOff, Loader2, X } from "lucide-react";
 import { saveDisplaySettings, saveLlmSettings, testLlmKey } from "@/api/settings";
 import { useDisplayStore } from "@/store/display";
+import { InsightFlowIcon } from "@/components/Brand/InsightFlowIcon";
 
 type Provider = "anthropic" | "openai" | "google" | "bedrock" | "openai-compatible";
 type HeaderPair = { key: string; value: string };
@@ -52,7 +53,7 @@ const providerLabel = (p: Provider) =>
 
 // ─── Step 1 — warm inline sentence ────────────────────────────────────────────
 
-const SAMPLE_NAMES = ["Aria", "Nova", "Scout", "Sage", "Atlas", "Ember", "Iris", "Max", "Luna", "Felix", "Analytics Agent", "Zara", "Rex"];
+const SAMPLE_NAMES = ["InsightFlow AI", "Aria", "Nova", "Scout", "Sage", "Atlas", "Ember", "Iris", "Max", "Luna", "Felix", "Zara", "Rex"];
 
 function Step1Name({ value, onChange, onSubmit }: { value: string; onChange: (v: string) => void; onSubmit: () => void }) {
   const measureRef = useRef<HTMLSpanElement>(null);
@@ -145,7 +146,7 @@ function Step1Name({ value, onChange, onSubmit }: { value: string; onChange: (v:
         ,
       </div>
       <div className="text-[2.6rem] font-light tracking-[-0.02em] leading-[1.25] text-foreground">
-        your data analytics agent.
+        your business intelligence copilot.
       </div>
 
       <p className="mt-7 text-base text-muted-foreground/60 font-normal tracking-normal">
@@ -555,7 +556,7 @@ export function OnboardingWizard({ onComplete, onDismiss }: WizardProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const displayName = agentName.trim() || "Analytics Agent";
+  const displayName = agentName.trim() || "InsightFlow AI";
   const isCustomModel = model === CUSTOM_MODEL_VALUE;
   const effectiveModel =
     provider === "openai-compatible" ? customModel.trim() : isCustomModel ? customModel.trim() : model;
@@ -681,17 +682,9 @@ export function OnboardingWizard({ onComplete, onDismiss }: WizardProps) {
 
         {/* Logo */}
         <div className="px-8 pt-10 pb-8 flex items-center gap-2.5">
-          <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden>
-            <path d="M8 42 A30 30 0 0 1 52 10" stroke="#0078D4" strokeWidth="7" strokeLinecap="round"/>
-            <path d="M56 42 A30 30 0 0 0 12 10" stroke="#E8A030" strokeWidth="7" strokeLinecap="round"/>
-            <circle cx="24" cy="28" r="3.5" fill="#D44B20"/>
-            <circle cx="32" cy="28" r="3.5" fill="#D44B20"/>
-            <circle cx="40" cy="28" r="3.5" fill="#D44B20"/>
-            <path d="M8 42 L3 54 L17 45" stroke="#0078D4" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M56 42 L61 54 L47 45" stroke="#E8A030" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <InsightFlowIcon size={26} />
           <span className="text-sm font-semibold tracking-tight">
-            {step > 0 && agentName.trim() ? agentName.trim() : "Setup"}
+            {step > 0 && agentName.trim() ? agentName.trim() : "InsightFlow AI Setup"}
           </span>
         </div>
 

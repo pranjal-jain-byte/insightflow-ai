@@ -2,32 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Typography & Global Defaults ────────────────────────────────────────── */
+@layer base {
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  code, pre, kbd, samp {
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Menlo, monospace;
+  }
+}
+
 /* ─── Theme tokens ──────────────────────────────────────────────────────────── */
 :root,
+[data-theme="insightflow"],
 [data-theme="datahub"] {
-  --background: 0 0% 100%;
-  --foreground: 229 29% 30%;
-  --muted: 220 33% 98%;
-  --muted-foreground: 229 16% 45%;
-  --border: 0 0% 93%;
-  --primary: 247 63% 53%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 235 67% 97%;
-  --secondary-foreground: 247 63% 53%;
-  --radius: 0.5rem;
-  --quality-good: 152 55% 35%;
-  --quality-fair: 30 90% 40%;
-  --quality-poor: 0 72% 48%;
+  /* InsightFlow AI Visual Design System */
+  --primary: 226 57% 21%;              /* Deep navy #172554 */
+  --primary-foreground: 0 0% 100%;     /* #FFFFFF */
+  --accent: 243 75% 59%;               /* Indigo #4F46E5 */
+  --accent-foreground: 0 0% 100%;      /* #FFFFFF */
+  --background: 210 40% 98%;           /* Light slate #F8FAFC */
+  --surface: 0 0% 100%;                /* Pure white #FFFFFF */
+  --foreground: 222 47% 11%;           /* Main text #0F172A */
+  --muted: 214 32% 95%;                /* Subtle slate tint */
+  --muted-foreground: 215 16% 47%;      /* Secondary text #64748B */
+  --border: 214 32% 91%;               /* Borders #E2E8F0 */
+  --secondary: 226 57% 95%;            /* Soft navy surface */
+  --secondary-foreground: 226 57% 21%;
+  --radius: 0.625rem;
+  --quality-good: 142 76% 36%;         /* Success #16A34A */
+  --quality-fair: 38 92% 50%;          /* Amber #F59E0B */
+  --quality-poor: 0 72% 51%;           /* Error #DC2626 */
 }
 
 [data-theme="warm"] {
   --background: 36 33% 97%;
+  --surface: 0 0% 100%;
   --foreground: 24 15% 20%;
   --muted: 35 25% 93%;
   --muted-foreground: 25 10% 46%;
   --border: 32 20% 87%;
   --primary: 32 95% 44%;
   --primary-foreground: 0 0% 100%;
+  --accent: 32 95% 44%;
+  --accent-foreground: 0 0% 100%;
   --secondary: 35 30% 91%;
   --secondary-foreground: 24 15% 20%;
   --radius: 0.75rem;
@@ -37,35 +60,42 @@
 }
 
 [data-theme="carbon"] {
-  --background: 240 5% 11%;
-  --foreground: 0 0% 91%;
-  --muted: 240 5% 18%;
-  --muted-foreground: 240 3% 61%;
-  --border: 240 3% 24%;
-  --primary: 0 0% 75%;
-  --primary-foreground: 240 5% 11%;
-  --secondary: 240 5% 18%;
-  --secondary-foreground: 0 0% 91%;
-  --radius: 0.2rem;
+  --background: 222 47% 8%;
+  --surface: 222 47% 12%;
+  --foreground: 210 40% 96%;
+  --muted: 217 33% 16%;
+  --muted-foreground: 215 20% 65%;
+  --border: 217 33% 20%;
+  --primary: 243 75% 65%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 243 75% 59%;
+  --accent-foreground: 0 0% 100%;
+  --secondary: 217 33% 16%;
+  --secondary-foreground: 210 40% 96%;
+  --radius: 0.5rem;
   --quality-good: 152 48% 55%;
   --quality-fair: 35 80% 58%;
   --quality-poor: 0 70% 62%;
 }
 
 [data-theme="ocean"] {
-  --background: 217 33% 8%;
-  --foreground: 210 36% 93%;
-  --muted: 215 28% 11%;
-  --muted-foreground: 213 13% 59%;
-  --border: 215 14% 22%;
-  --primary: 212 100% 67%;
-  --primary-foreground: 217 33% 8%;
-  --secondary: 215 21% 16%;
-  --secondary-foreground: 210 16% 82%;
+  /* Midnight Navy dark mode */
+  --background: 222 47% 7%;            /* #0B1120 */
+  --surface: 222 47% 11%;              /* #0F172A */
+  --foreground: 210 40% 98%;           /* #F8FAFC */
+  --muted: 217 33% 15%;                /* #1E293B */
+  --muted-foreground: 215 20% 65%;      /* #94A3B8 */
+  --border: 217 33% 19%;               /* #253349 */
+  --primary: 239 84% 67%;              /* #818CF8 */
+  --primary-foreground: 222 47% 7%;
+  --accent: 243 75% 59%;               /* #4F46E5 */
+  --accent-foreground: 0 0% 100%;
+  --secondary: 217 33% 15%;
+  --secondary-foreground: 210 40% 90%;
   --radius: 0.5rem;
-  --quality-good: 152 52% 55%;
-  --quality-fair: 35 82% 58%;
-  --quality-poor: 0 68% 62%;
+  --quality-good: 142 76% 45%;
+  --quality-fair: 38 92% 55%;
+  --quality-poor: 0 72% 60%;
 }
 
 /* ─── Onboarding full-page layout ──────────────────────────────────────────── */
@@ -80,12 +110,12 @@
 /* Left panel: primary-tinted dot grid over a subtle gradient */
 .onboarding-left {
   background:
-    radial-gradient(circle, hsl(var(--primary) / 0.13) 1px, transparent 1px),
-    linear-gradient(160deg, hsl(var(--primary) / 0.07) 0%, hsl(var(--background)) 75%);
+    radial-gradient(circle, hsl(var(--accent) / 0.15) 1px, transparent 1px),
+    linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--background)) 75%);
   background-size: 22px 22px, 100% 100%;
 }
 
-/* Step content slide-in animations (direction toggled via class) */
+/* Step content slide-in animations */
 @keyframes ob-slide-in-fwd {
   from { opacity: 0; transform: translateX(28px); }
   to   { opacity: 1; transform: translateX(0);    }
@@ -118,7 +148,7 @@
     height: auto !important;
     overflow: visible !important;
     background: white !important;
-    color: #111 !important;
+    color: #0F172A !important;
     font-size: 11pt !important;
     line-height: 1.6 !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
@@ -155,12 +185,12 @@
   /* ── Print header ────────────────────────────────────────── */
   #print-header {
     display: block !important;
-    border-bottom: 2px solid #d1d5db;
+    border-bottom: 2px solid #E2E8F0;
     padding: 8px 24px 14px !important;
     margin-bottom: 20px;
   }
-  #print-header h1 { font-size: 16pt !important; font-weight: 700 !important; color: #111 !important; margin: 0 0 4px !important; }
-  #print-header p  { font-size: 9pt  !important; color: #6b7280 !important; margin: 0 !important; }
+  #print-header h1 { font-size: 16pt !important; font-weight: 700 !important; color: #0F172A !important; margin: 0 0 4px !important; }
+  #print-header p  { font-size: 9pt  !important; color: #64748B !important; margin: 0 !important; }
 
   /* ── Message list ────────────────────────────────────────── */
   #chat-messages {
@@ -171,33 +201,27 @@
     max-height: none !important;
   }
 
-  /* ChatView wrapper: remove flex-col + h-full so it doesn't hold screen height */
   [data-print-chat] {
     display: block !important;
     height: auto !important;
     overflow: visible !important;
   }
 
-  /* Each message row: block instead of flex so children span full print width */
   #chat-messages > [data-print-role] {
     display: block !important;
     margin-bottom: 6pt !important;
   }
 
-  /* Keep SQL query + result table together; text messages can flow naturally */
   [data-print-sql] { page-break-inside: avoid; }
 
-  /* Override any Tailwind max-w-[N%] arbitrary classes on message bubbles */
   #chat-messages [class*="max-w-["] {
     max-width: 100% !important;
     width: 100% !important;
   }
 
-  /* Prose text */
   #chat-messages p,
-  #chat-messages li { font-size: 10.5pt !important; color: #111 !important; }
+  #chat-messages li { font-size: 10.5pt !important; color: #0F172A !important; }
 
-  /* User message rows — make children span full width (data-print-role set in MessageList.tsx) */
   #chat-messages > [data-print-role="user"] > * {
     display: block !important;
     width: 100% !important;
@@ -205,11 +229,10 @@
     margin: 0 !important;
   }
 
-  /* User message bubble styling (data-print-user set in TextMessage.tsx) */
   [data-print-user] {
-    background: #ede9fe !important;
-    color: #111 !important;
-    border-left: 4px solid #7c3aed !important;
+    background: #EEF2FF !important;
+    color: #172554 !important;
+    border-left: 4px solid #4F46E5 !important;
     border-radius: 6px !important;
     padding: 8px 12px !important;
     font-size: 11pt !important;
@@ -217,34 +240,31 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
   }
 
-  /* Code / SQL blocks — scope to pre/code only, not prose p.font-mono */
   #chat-messages pre,
   #chat-messages code {
     font-size: 8.5pt !important;
-    font-family: "Fira Mono", "Cascadia Code", Menlo, monospace !important;
+    font-family: "JetBrains Mono", "Fira Code", monospace !important;
     white-space: pre-wrap !important;
     word-break: break-word !important;
     overflow: visible !important;
-    background: #f8f9fa !important;
-    border: 1px solid #e5e7eb !important;
+    background: #F8FAFC !important;
+    border: 1px solid #E2E8F0 !important;
     border-radius: 4px !important;
     padding: 6px 8px !important;
     line-height: 1.45 !important;
-    color: #1f2937 !important;
+    color: #0F172A !important;
   }
 
-  /* Thinking block content: render as readable prose, not code */
   [data-print-expand] p {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
     font-size: 9pt !important;
-    color: #6b7280 !important;
+    color: #64748B !important;
     background: transparent !important;
     border: none !important;
     padding: 0 !important;
     white-space: pre-wrap !important;
   }
 
-  /* SQL result tables */
   #chat-messages table {
     width: 100% !important;
     border-collapse: collapse !important;
@@ -252,30 +272,27 @@
     margin: 6pt 0 !important;
   }
   #chat-messages th, #chat-messages td {
-    border: 1px solid #d1d5db !important;
-    padding: 3px 8px !important;
+    border: 1px solid #E2E8F0 !important;
+    padding: 4px 8px !important;
     text-align: left !important;
-    color: #111 !important;
+    color: #0F172A !important;
     word-break: break-word !important;
     white-space: normal !important;
   }
-  #chat-messages th { background: #f3f4f6 !important; font-weight: 600 !important; }
+  #chat-messages th { background: #F1F5F9 !important; font-weight: 600 !important; }
 
-  /* Thinking / tool blocks */
   [data-print-expand] {
     max-height: none !important;
     opacity: 1 !important;
     overflow: visible !important;
     font-size: 9pt !important;
-    color: #6b7280 !important;
+    color: #64748B !important;
   }
 
-  /* Charts — keep intrinsic Vega height, full width; hide options button */
   .vega-embed, .vega-embed * { overflow: visible !important; max-height: none !important; }
   .vega-embed svg { width: 100% !important; }
   .vega-embed summary, .vega-embed details { display: none !important; }
 
-  /* Hide interactive controls inside messages */
   #chat-messages button,
   #chat-messages input,
   #chat-messages select { display: none !important; }

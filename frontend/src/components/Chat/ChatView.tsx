@@ -323,8 +323,8 @@ export function ChatView() {
         <h1 style={{ fontSize: "18px", fontWeight: 700, margin: 0 }}>
           {activeConv?.title ?? "Conversation"}
         </h1>
-        <p style={{ fontSize: "12px", color: "#6b7280", margin: "4px 0 0" }}>
-          Engine: {activeConv?.engine_name} · Exported {new Date().toLocaleString()}
+        <p style={{ fontSize: "12px", color: "#64748B", margin: "4px 0 0" }}>
+          Engine: {activeConv?.engine_name} · Generated with InsightFlow AI · {new Date().toLocaleString()}
         </p>
       </div>
 

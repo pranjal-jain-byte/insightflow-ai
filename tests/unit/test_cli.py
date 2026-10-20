@@ -71,8 +71,14 @@ def test_cli_bootstrap_runs_all_steps_idempotent(sqlite_db, monkeypatch):
 def test_cli_bootstrap_fails_fast_on_migration_error(monkeypatch, tmp_path):
     """If migrate fails, the umbrella command must exit non-zero."""
     _chdir_repo_root(monkeypatch)
+    import sys
+
     # Point at an unwritable directory to break sqlite mkdir
-    bad_url = "sqlite+aiosqlite:////this/path/does/not/exist/test.db"
+    bad_url = (
+        "sqlite+aiosqlite:///Z:/nonexistent_drive_999/test.db"
+        if sys.platform == "win32"
+        else "sqlite+aiosqlite:////this/path/does/not/exist/test.db"
+    )
     monkeypatch.setenv("DATABASE_URL", bad_url)
     from analytics_agent import config as _config
 

@@ -1,9 +1,27 @@
 import { useState, useRef, useEffect, useMemo, type KeyboardEvent } from "react";
-import { Send, Database } from "lucide-react";
+import { Send, Database, Sparkles, TrendingUp, BarChart3, PieChart, HelpCircle } from "lucide-react";
 import { useConversationsStore } from "@/store/conversations";
 import { useDisplayStore, GREETING_TTL_MS } from "@/store/display";
-import { createConversation } from "@/api/conversations";
-import { STARTER_PROMPTS } from "@/lib/starterPrompts";
+import { InsightFlowIcon } from "@/components/Brand/InsightFlowIcon";
+
+const FEATURED_PROMPTS = [
+  {
+    text: "Which product categories generated the highest revenue?",
+    icon: TrendingUp,
+  },
+  {
+    text: "Show monthly revenue trends.",
+    icon: BarChart3,
+  },
+  {
+    text: "Compare performance across business segments.",
+    icon: PieChart,
+  },
+  {
+    text: "Identify the main factors behind a sales decline.",
+    icon: HelpCircle,
+  },
+];
 
 async function fetchDataHubUser(): Promise<string> {
   try {
@@ -23,7 +41,6 @@ function getTimeOfDay(): string {
   return "evening";
 }
 
-// Module-level flag prevents double-fetch from React StrictMode / remounts
 let _greetingFetchInFlight = false;
 
 async function fetchLlmGreeting(name: string): Promise<string> {
@@ -38,18 +55,6 @@ async function fetchLlmGreeting(name: string): Promise<string> {
   }
 }
 
-function getGreeting(): string {
-  const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  return "Good evening";
-}
-
-function pickSuggestions(n: number): string[] {
-  const shuffled = [...STARTER_PROMPTS].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, n);
-}
-
 interface Props {
   onSend: (text: string, engineName: string) => void;
 }
@@ -58,14 +63,13 @@ export function WelcomeView({ onSend }: Props) {
   const { engines } = useConversationsStore();
   const { appName, logoUrl } = useDisplayStore();
   const [text, setText] = useState("");
-  const [placeholder, ...suggestions] = useMemo(() => pickSuggestions(5), []);
   const [engine, setEngine] = useState(engines[0]?.name ?? "");
-  const { greeting: cachedGreeting, userName: cachedUser, greetingGeneratedAt, setGreeting: storeGreeting } = useDisplayStore();
+  const {
+    greeting: cachedGreeting,
+    greetingGeneratedAt,
+    setGreeting: storeGreeting,
+  } = useDisplayStore();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Use cached values from store; only call APIs once per session
-  const userName = cachedUser;
-  const greeting = cachedGreeting;
 
   useEffect(() => {
     if (!engine && engines.length > 0) setEngine(engines[0].name);
@@ -105,99 +109,124 @@ export function WelcomeView({ onSend }: Props) {
     }
   };
 
+  const resolvedAppName = appName || "InsightFlow AI";
+
   return (
-    <div className="flex-1 flex flex-col items-center justify-center gap-8 px-4 pb-16">
-      {/* Greeting */}
-      <div className="flex flex-col items-center gap-3 select-none">
+    <div className="flex-1 flex flex-col items-center justify-center gap-7 px-4 pb-12 pt-6 overflow-y-auto">
+      {/* Brand Header */}
+      <div className="flex flex-col items-center gap-3.5 text-center select-none max-w-xl">
         {logoUrl ? (
-          <img src={logoUrl} alt="Logo" className="w-12 h-12 object-contain" />
+          <img src={logoUrl} alt="Logo" className="w-14 h-14 object-contain" />
         ) : (
-          <svg width="48" height="48" viewBox="0 0 64 64" fill="none" aria-hidden>
-            <path d="M8 42 A30 30 0 0 1 52 10" stroke="#0078D4" strokeWidth="7" strokeLinecap="round"/>
-            <path d="M56 42 A30 30 0 0 0 12 10" stroke="#E8A030" strokeWidth="7" strokeLinecap="round"/>
-            <circle cx="24" cy="28" r="3.5" fill="#D44B20"/>
-            <circle cx="32" cy="28" r="3.5" fill="#D44B20"/>
-            <circle cx="40" cy="28" r="3.5" fill="#D44B20"/>
-            <path d="M8 42 L3 54 L17 45" stroke="#0078D4" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M56 42 L61 54 L47 45" stroke="#E8A030" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <div className="p-2.5 rounded-2xl bg-surface border border-border shadow-xs">
+            <InsightFlowIcon size={44} />
+          </div>
         )}
-        <h1 className="text-2xl font-semibold tracking-tight text-center max-w-lg leading-snug min-h-[2rem]">
-          {greeting ? (
-            greeting
-          ) : (
-            <span className="inline-block w-48 h-7 rounded-md bg-muted animate-pulse" />
-          )}
-        </h1>
+
+        <div className="space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            Welcome to {resolvedAppName}
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground font-normal leading-relaxed max-w-md mx-auto">
+            Ask questions about your business data and turn complex information into actionable insights.
+          </p>
+        </div>
+
+        {cachedGreeting && (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium border border-accent/20">
+            <Sparkles className="w-3 h-3" />
+            <span>{cachedGreeting}</span>
+          </div>
+        )}
       </div>
 
       {/* Input card */}
       <div className="w-full max-w-2xl">
-        <div className="rounded-2xl border border-border bg-background shadow-sm focus-within:shadow-md focus-within:border-border transition-shadow">
+        <div className="rounded-2xl border border-border bg-surface shadow-sm focus-within:shadow-md focus-within:border-accent/60 focus-within:ring-2 focus-within:ring-accent/10 transition-all">
           {/* Textarea */}
-          <div className="px-4 pt-3 pb-2">
+          <div className="px-4 pt-3.5 pb-2">
             <textarea
               ref={textareaRef}
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKeyDown}
               onInput={handleInput}
-              placeholder={placeholder}
+              placeholder="Ask questions about your business data (e.g. Which product categories generated the highest revenue?)"
               rows={1}
-              className="w-full bg-transparent resize-none outline-none text-sm placeholder:text-muted-foreground/50 max-h-40 leading-relaxed"
+              className="w-full bg-transparent resize-none outline-none text-sm text-foreground placeholder:text-muted-foreground/60 max-h-40 leading-relaxed font-normal"
             />
           </div>
 
           {/* Toolbar */}
-          <div className="flex items-center justify-between px-3 pb-3">
+          <div className="flex items-center justify-between px-3.5 pb-3 pt-1 border-t border-border/40">
             {/* Engine selector */}
-            {engines.length > 0 && (
+            {engines.length > 0 ? (
               <div className="flex items-center gap-1.5">
                 <Database className="w-3.5 h-3.5 text-muted-foreground" />
                 <select
                   value={engine}
                   onChange={(e) => setEngine(e.target.value)}
-                  className="text-xs bg-transparent border border-border rounded px-2 py-1 text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50"
+                  className="text-xs bg-muted/60 border border-border rounded-md px-2 py-1 text-foreground focus:outline-none focus:ring-1 focus:ring-accent"
                 >
                   {engines.map((e) => (
                     <option key={e.name} value={e.name}>{e.name}</option>
                   ))}
                 </select>
               </div>
+            ) : (
+              <span className="text-[11px] text-muted-foreground italic">No engine selected</span>
             )}
-            {engines.length === 0 && <span />}
 
             {/* Send */}
             <button
               onClick={handleSend}
               disabled={!text.trim()}
-              className="p-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90
-                         disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="p-2 rounded-xl bg-accent text-accent-foreground hover:opacity-90
+                         disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-xs"
+              title="Send message"
             >
               <Send className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Suggestion chips */}
-        {engines.length > 0 && (
-          <div className="grid grid-cols-2 gap-2 mt-3 w-full max-w-2xl">
-            {suggestions.map((s) => (
-              <button
-                key={s}
-                onClick={() => {
-                  setText(s);
-                  textareaRef.current?.focus();
-                }}
-                className="text-xs px-3 py-2 rounded-xl border border-border bg-muted/30
-                           hover:bg-muted/60 text-muted-foreground hover:text-foreground
-                           transition-colors text-left leading-snug"
-              >
-                {s}
-              </button>
-            ))}
+        {/* Suggested Questions */}
+        <div className="mt-5 space-y-2">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Suggested questions
+            </span>
+            <span className="text-[11px] text-muted-foreground/70">
+              Click any question to start
+            </span>
           </div>
-        )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {FEATURED_PROMPTS.map((p) => {
+              const Icon = p.icon;
+              return (
+                <button
+                  key={p.text}
+                  type="button"
+                  onClick={() => {
+                    setText(p.text);
+                    textareaRef.current?.focus();
+                  }}
+                  className="group flex items-start gap-2.5 text-xs p-3 rounded-xl border border-border bg-surface
+                             hover:bg-muted/50 hover:border-accent/40 text-foreground
+                             transition-all text-left shadow-xs hover:shadow-sm"
+                >
+                  <div className="p-1.5 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-colors flex-shrink-0 mt-0.5">
+                    <Icon className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="leading-snug font-medium text-foreground/90 group-hover:text-foreground">
+                    {p.text}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

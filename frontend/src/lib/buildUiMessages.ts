@@ -146,7 +146,6 @@ export function buildUiMessages(records: MessageRecord[]): {
             break;
           }
           if (
-            r.event_type === "TOOL_RESULT" ||
             r.event_type === "SQL" ||
             r.event_type === "CHART" ||
             r.event_type === "ERROR"

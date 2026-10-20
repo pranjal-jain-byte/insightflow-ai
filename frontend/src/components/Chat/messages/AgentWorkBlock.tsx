@@ -109,7 +109,7 @@ export function AgentWorkBlock({
       >
         <Settings2
           className={`w-3.5 h-3.5 flex-shrink-0 transition-colors ${
-            isStreaming ? "text-primary animate-spin" : "text-muted-foreground/60"
+            isStreaming ? "text-accent animate-spin" : "text-muted-foreground/60"
           }`}
           style={isStreaming ? { animationDuration: "3s" } : undefined}
         />
@@ -123,7 +123,7 @@ export function AgentWorkBlock({
                 {[0, 1, 2].map((i) => (
                   <span
                     key={i}
-                    className="w-1 h-1 rounded-full bg-primary/60 animate-bounce"
+                    className="w-1 h-1 rounded-full bg-accent animate-bounce"
                     style={{ animationDelay: `${i * 0.15}s` }}
                   />
                 ))}

@@ -77,23 +77,23 @@ export function MessageInput({ onSend, onStop, disabled, isStreaming }: Props) {
           ))}
         </div>
       )}
-      <div className="flex items-end gap-2 bg-muted rounded-lg px-3 py-2">
+      <div className="flex items-end gap-2 bg-surface border border-border shadow-xs focus-within:border-accent/60 focus-within:ring-2 focus-within:ring-accent/10 rounded-xl px-3.5 py-2.5 transition-all">
         <textarea
           ref={textareaRef}
           value={text}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onInput={handleInput}
-          placeholder={isStreaming ? "Responding…" : "Ask about your data…"}
+          placeholder={isStreaming ? "InsightFlow AI is generating insights…" : "Ask questions about your business data…"}
           disabled={disabled}
           rows={1}
-          className="flex-1 bg-transparent resize-none outline-none text-sm placeholder:text-muted-foreground disabled:opacity-50 max-h-40"
+          className="flex-1 bg-transparent resize-none outline-none text-sm text-foreground placeholder:text-muted-foreground/60 disabled:opacity-50 max-h-40"
         />
         {isStreaming && onStop ? (
           <button
             onClick={onStop}
             title="Stop generating"
-            className="flex-shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors"
+            className="flex-shrink-0 p-1.5 rounded-lg text-muted-foreground hover:text-red-600 hover:bg-red-50 transition-colors"
           >
             <Square className="w-4 h-4" />
           </button>
@@ -101,7 +101,7 @@ export function MessageInput({ onSend, onStop, disabled, isStreaming }: Props) {
           <button
             onClick={handleSend}
             disabled={disabled || !text.trim()}
-            className="flex-shrink-0 p-1.5 rounded-md text-primary hover:bg-primary/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="flex-shrink-0 p-1.5 rounded-lg bg-accent text-accent-foreground hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-xs"
           >
             <Send className="w-4 h-4" />
           </button>
